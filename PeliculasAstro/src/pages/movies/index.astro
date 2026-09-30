@@ -1,0 +1,422 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import Navbar from "../../components/Navbar.astro";
+import MovieCard from "../../components/MovieCard.astro";
+import MovieFilters from "../../components/MovieFilters.astro";
+import type { Movie } from "../../types/movie";
+
+const movies: Movie[] = [
+  {
+    id: 1,
+    titulo: "Interstellar",
+    director: "Christopher Nolan",
+    reparto: "Matthew McConaughey, Anne Hathaway",
+    genero: "Ciencia ficción",
+    clasificacion_edad: "13+",
+    fecha_estreno: "2014-11-07",
+    duracion: 169,
+    sinopsis:
+      "Un grupo de astronautas viaja a través de un agujero de gusano en busca de un nuevo hogar para la humanidad.",
+    poster_url:
+      "https://image.tmdb.org/t/p/w500/gEU2QniE6E77NI6lCU6MxlNBvIx.jpg",
+    calificacion: 8.7,
+    idioma: "Inglés",
+    pais: "Estados Unidos",
+  },
+  {
+    id: 2,
+    titulo: "Inception",
+    director: "Christopher Nolan",
+    reparto: "Leonardo DiCaprio, Joseph Gordon-Levitt",
+    genero: "Ciencia ficción",
+    clasificacion_edad: "13+",
+    fecha_estreno: "2010-07-16",
+    duracion: 148,
+    sinopsis:
+      "Un ladrón especializado en infiltrarse en los sueños recibe la misión de implantar una idea en la mente de una persona.",
+    poster_url:
+      "https://image.tmdb.org/t/p/w500/oYuLEt3zVCKq57qu2F8dT7NIa6f.jpg",
+    calificacion: 8.8,
+    idioma: "Inglés",
+    pais: "Estados Unidos",
+  },
+  {
+    id: 3,
+    titulo: "The Dark Knight",
+    director: "Christopher Nolan",
+    reparto: "Christian Bale, Heath Ledger",
+    genero: "Acción",
+    clasificacion_edad: "13+",
+    fecha_estreno: "2008-07-18",
+    duracion: 152,
+    sinopsis:
+      "Batman se enfrenta a un criminal que busca sumir a Gotham en el caos.",
+    poster_url:
+      "https://image.tmdb.org/t/p/w500/qJ2tW6WMUDux911r6m7haRef0WH.jpg",
+    calificacion: 9.0,
+    idioma: "Inglés",
+    pais: "Estados Unidos",
+  },
+  {
+    id: 4,
+    titulo: "Parasite",
+    director: "Bong Joon-ho",
+    reparto: "Song Kang-ho, Lee Sun-kyun",
+    genero: "Drama",
+    clasificacion_edad: "16+",
+    fecha_estreno: "2019-05-30",
+    duracion: 132,
+    sinopsis:
+      "Una familia con dificultades económicas comienza a relacionarse con una familia rica de maneras inesperadas.",
+    poster_url:
+      "https://image.tmdb.org/t/p/w500/7IiTTgloJzvGI1TAYymCfbfl3vT.jpg",
+    calificacion: 8.5,
+    idioma: "Coreano",
+    pais: "Corea del Sur",
+  },
+  {
+    id: 5,
+    titulo: "Whiplash",
+    director: "Damien Chazelle",
+    reparto: "Miles Teller, J.K. Simmons",
+    genero: "Drama",
+    clasificacion_edad: "16+",
+    fecha_estreno: "2014-10-10",
+    duracion: 106,
+    sinopsis:
+      "Un joven baterista busca convertirse en uno de los mejores músicos bajo la exigencia extrema de su instructor.",
+    poster_url:
+      "https://image.tmdb.org/t/p/w500/7fn624j5lj3xTme2SgiLCeuedmO.jpg",
+    calificacion: 8.5,
+    idioma: "Inglés",
+    pais: "Estados Unidos",
+  },
+  {
+    id: 6,
+    titulo: "The Matrix",
+    director: "Lana Wachowski, Lilly Wachowski",
+    reparto: "Keanu Reeves, Laurence Fishburne",
+    genero: "Ciencia ficción",
+    clasificacion_edad: "16+",
+    fecha_estreno: "1999-03-31",
+    duracion: 136,
+    sinopsis:
+      "Un programador descubre que la realidad que conoce es una simulación y se une a una rebelión.",
+    poster_url:
+      "https://image.tmdb.org/t/p/w500/f89U3ADr1oiB1s9GkdPOEpXUk5H.jpg",
+    calificacion: 8.7,
+    idioma: "Inglés",
+    pais: "Estados Unidos",
+  },
+  {
+    id: 7,
+    titulo: "Forrest Gump",
+    director: "Robert Zemeckis",
+    reparto: "Tom Hanks, Robin Wright",
+    genero: "Drama",
+    clasificacion_edad: "13+",
+    fecha_estreno: "1994-07-06",
+    duracion: 142,
+    sinopsis:
+      "La vida de un hombre con una visión sencilla del mundo lo lleva a vivir acontecimientos históricos.",
+    poster_url:
+      "https://image.tmdb.org/t/p/w500/arw2vcBveWOVZr6pxd9XTd1TdQa.jpg",
+    calificacion: 8.8,
+    idioma: "Inglés",
+    pais: "Estados Unidos",
+  },
+  {
+    id: 8,
+    titulo: "Pulp Fiction",
+    director: "Quentin Tarantino",
+    reparto: "John Travolta, Samuel L. Jackson",
+    genero: "Crimen",
+    clasificacion_edad: "18+",
+    fecha_estreno: "1994-10-14",
+    duracion: 154,
+    sinopsis:
+      "Varias historias de criminales de Los Ángeles se entrelazan de manera inesperada.",
+    poster_url:
+      "https://image.tmdb.org/t/p/w500/d5iIlFn5s0ImszYzBPb8JPIfbXD.jpg",
+    calificacion: 8.9,
+    idioma: "Inglés",
+    pais: "Estados Unidos",
+  },
+];
+---
+
+<Layout title="Películas recomendadas">
+  <div class="movies-page">
+    <Navbar />
+
+    <main class="movies-content">
+      <section class="page-header">
+        <h1>Películas recomendadas</h1>
+        <p>Descubre qué películas valen la pena ver.</p>
+      </section>
+
+      <MovieFilters movies={movies} />
+
+      <section id="movies-grid" class="movies-grid">
+        {movies.map((movie) => <MovieCard movie={movie} />)}
+      </section>
+
+      <p id="no-results" class="no-results" hidden>
+        No encontramos películas con esos filtros.
+      </p>
+
+      <nav
+        id="pagination"
+        class="pagination"
+        aria-label="Paginación de películas"
+      >
+        <button
+          id="previous-page"
+          class="pagination-button"
+          type="button"
+          disabled
+        >
+          Anterior
+        </button>
+
+        <div id="page-numbers"></div>
+
+        <button id="next-page" class="pagination-button" type="button">
+          Siguiente
+        </button>
+      </nav>
+    </main>
+  </div>
+</Layout>
+
+<script>
+  const moviesGrid = document.querySelector<HTMLDivElement>("#movies-grid");
+
+  const noResults = document.querySelector<HTMLParagraphElement>("#no-results");
+
+  const pagination = document.querySelector<HTMLElement>("#pagination");
+
+  const previousPage =
+    document.querySelector<HTMLButtonElement>("#previous-page");
+
+  const nextPage = document.querySelector<HTMLButtonElement>("#next-page");
+
+  const pageNumbers = document.querySelector<HTMLDivElement>("#page-numbers");
+
+  const movieCards = Array.from(
+    moviesGrid?.querySelectorAll<HTMLElement>(".movie-card") ?? [],
+  );
+
+  const moviesPerPage = 6;
+
+  let currentPage = 1;
+  let visibleCards = [...movieCards];
+
+  const renderPageNumbers = () => {
+    if (!pageNumbers) return;
+
+    pageNumbers.innerHTML = "";
+
+    const totalPages = Math.ceil(visibleCards.length / moviesPerPage);
+
+    for (let page = 1; page <= totalPages; page++) {
+      const button = document.createElement("button");
+
+      button.type = "button";
+      button.className = "pagination-button page-number";
+      button.textContent = String(page);
+
+      if (page === currentPage) {
+        button.classList.add("active");
+      }
+
+      button.addEventListener("click", () => {
+        currentPage = page;
+        renderMovies();
+      });
+
+      pageNumbers.appendChild(button);
+    }
+  };
+
+  const renderMovies = () => {
+    const totalPages = Math.ceil(visibleCards.length / moviesPerPage);
+
+    if (totalPages === 0) {
+      if (moviesGrid) {
+        moviesGrid.hidden = true;
+      }
+
+      if (noResults) {
+        noResults.hidden = false;
+      }
+
+      if (pagination) {
+        pagination.hidden = true;
+      }
+
+      return;
+    }
+
+    if (moviesGrid) {
+      moviesGrid.hidden = false;
+    }
+
+    if (noResults) {
+      noResults.hidden = true;
+    }
+
+    if (pagination) {
+      pagination.hidden = false;
+    }
+
+    movieCards.forEach((card) => {
+      card.style.display = "none";
+    });
+
+    const start = (currentPage - 1) * moviesPerPage;
+    const end = start + moviesPerPage;
+
+    visibleCards.slice(start, end).forEach((card) => {
+      card.style.display = "";
+    });
+
+    if (previousPage) {
+      previousPage.disabled = currentPage === 1;
+    }
+
+    if (nextPage) {
+      nextPage.disabled = currentPage === totalPages;
+    }
+
+    renderPageNumbers();
+  };
+
+  window.addEventListener("movies-filter", (event) => {
+    const customEvent = event as CustomEvent;
+
+    const filteredMovies = customEvent.detail as { id: number }[];
+
+    visibleCards = movieCards.filter((card) => {
+      const id = card
+        .querySelector<HTMLAnchorElement>(".details-button")
+        ?.getAttribute("href");
+
+      if (!id) return false;
+
+      const movieId = Number(id.split("/").pop());
+
+      return filteredMovies.some((movie) => movie.id === movieId);
+    });
+
+    currentPage = 1;
+    renderMovies();
+  });
+
+  previousPage?.addEventListener("click", () => {
+    if (currentPage > 1) {
+      currentPage--;
+      renderMovies();
+    }
+  });
+
+  nextPage?.addEventListener("click", () => {
+    const totalPages = Math.ceil(visibleCards.length / moviesPerPage);
+
+    if (currentPage < totalPages) {
+      currentPage++;
+      renderMovies();
+    }
+  });
+
+  renderMovies();
+</script>
+
+<style>
+  .movies-page {
+    min-height: 100vh;
+    background: #f5f6f8;
+  }
+
+  .movies-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 25px;
+  }
+
+  .page-header {
+    margin-bottom: 30px;
+  }
+
+  .page-header h1 {
+    margin: 0 0 8px;
+    color: #111827;
+    font-size: 32px;
+    font-weight: 800;
+  }
+
+  .page-header p {
+    margin: 0;
+    color: #6b7280;
+    font-size: 17px;
+  }
+
+  .movies-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 25px;
+  }
+
+  .no-results {
+    padding: 40px;
+    border-radius: 12px;
+    background: #ffffff;
+    color: #6b7280;
+    text-align: center;
+    border: 1px solid #e5e7eb;
+  }
+
+  .pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    margin-top: 35px;
+  }
+
+  .pagination-button {
+    min-width: 42px;
+    padding: 10px 14px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    background: #ffffff;
+    color: #374151;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    cursor: pointer;
+  }
+
+  .pagination-button:hover:not(:disabled) {
+    background: #f3f4f6;
+  }
+
+  .pagination-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .pagination-button.active {
+    border-color: #2563eb;
+    background: #2563eb;
+    color: #ffffff;
+  }
+
+  .page-number {
+    min-width: 40px;
+  }
+
+  #page-numbers {
+    display: flex;
+    gap: 8px;
+  }
+</style>

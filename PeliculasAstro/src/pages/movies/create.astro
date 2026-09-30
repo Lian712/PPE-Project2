@@ -1,0 +1,84 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import Navbar from "../../components/Navbar.astro";
+import MovieForm from "../../components/MovieForm.astro";
+---
+
+<Layout title="Agregar película">
+  <div class="create-page">
+    <Navbar />
+
+    <main class="create-content">
+      <section class="page-header">
+        <h1>Agregar película</h1>
+
+        <p>
+          Completa la información de la película para agregarla al catálogo.
+        </p>
+      </section>
+
+      <MovieForm />
+    </main>
+  </div>
+</Layout>
+
+<script>
+  const handleSubmit = (event: Event) => {
+    const customEvent = event as CustomEvent<
+      Record<string, FormDataEntryValue>
+    >;
+
+    console.log("Datos recibidos:", customEvent.detail);
+
+    // Por ahora no guardamos en backend.
+    // Supabase se conectará después.
+  };
+
+  const handleCancel = () => {
+    window.location.href = "/movies";
+  };
+
+  window.addEventListener("movie-form-submit", handleSubmit);
+
+  window.addEventListener("movie-form-cancel", handleCancel);
+</script>
+
+<style>
+  .create-page {
+    min-height: 100vh;
+    background: #f5f6f8;
+  }
+
+  .create-content {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 40px 25px;
+  }
+
+  .page-header {
+    margin-bottom: 30px;
+  }
+
+  .page-header h1 {
+    margin: 0 0 8px;
+    color: #111827;
+    font-size: 32px;
+    font-weight: 800;
+  }
+
+  .page-header p {
+    margin: 0;
+    color: #6b7280;
+    font-size: 17px;
+  }
+
+  @media (max-width: 600px) {
+    .create-content {
+      padding: 30px 18px;
+    }
+
+    .page-header h1 {
+      font-size: 28px;
+    }
+  }
+</style>

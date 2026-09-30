@@ -1,0 +1,565 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import Navbar from "../../components/Navbar.astro";
+
+import type { Movie } from "../../types/movie";
+
+const movies: Movie[] = [
+  {
+    id: 1,
+    titulo: "Interstellar",
+    director: "Christopher Nolan",
+    reparto: "Matthew McConaughey, Anne Hathaway",
+    genero: "Ciencia ficción",
+    clasificacion_edad: "13+",
+    fecha_estreno: "2014-11-07",
+    duracion: 169,
+    sinopsis:
+      "Un grupo de exploradores viaja a través de un agujero de gusano para encontrar un nuevo hogar para la humanidad.",
+    poster_url:
+      "https://image.tmdb.org/t/p/w500/gEU2QniE6E77NI6lCU6MxlNBvIx.jpg",
+    calificacion: 8.7,
+    idioma: "Inglés",
+    pais: "Estados Unidos",
+  },
+  {
+    id: 2,
+    titulo: "Inception",
+    director: "Christopher Nolan",
+    reparto: "Leonardo DiCaprio, Joseph Gordon-Levitt",
+    genero: "Ciencia ficción",
+    clasificacion_edad: "13+",
+    fecha_estreno: "2010-07-16",
+    duracion: 148,
+    sinopsis:
+      "Un especialista en espionaje corporativo utiliza una tecnología que permite entrar en los sueños.",
+    poster_url:
+      "https://image.tmdb.org/t/p/w500/oYuLEt3zVCKq57qu2F8dT7NIa6f.jpg",
+    calificacion: 8.8,
+    idioma: "Inglés",
+    pais: "Estados Unidos",
+  },
+  {
+    id: 3,
+    titulo: "The Dark Knight",
+    director: "Christopher Nolan",
+    reparto: "Christian Bale, Heath Ledger",
+    genero: "Acción",
+    clasificacion_edad: "13+",
+    fecha_estreno: "2008-07-18",
+    duracion: 152,
+    sinopsis:
+      "Batman se enfrenta al Joker, un criminal que busca sumir Gotham en el caos.",
+    poster_url:
+      "https://image.tmdb.org/t/p/w500/qJ2tW6WMUDux911r6m7haRef0WH.jpg",
+    calificacion: 9.0,
+    idioma: "Inglés",
+    pais: "Estados Unidos",
+  },
+];
+
+const movieId = Number(Astro.params.id);
+
+const movie = movies.find((item) => item.id === movieId);
+
+const getRecommendation = (calificacion: number) => {
+  if (calificacion >= 8) {
+    return {
+      text: "🔥 Muy recomendada",
+      class: "recommendation-excellent",
+    };
+  }
+
+  if (calificacion >= 6) {
+    return {
+      text: "👍 Vale la pena",
+      class: "recommendation-good",
+    };
+  }
+
+  if (calificacion >= 4) {
+    return {
+      text: "🤔 Regular",
+      class: "recommendation-regular",
+    };
+  }
+
+  return {
+    text: "❌ No recomendada",
+    class: "recommendation-bad",
+  };
+};
+
+const recommendation = movie
+  ? getRecommendation(movie.calificacion)
+  : null;
+---
+
+<Layout title={movie ? movie.titulo : "Película no encontrada"}>
+  <div class="detail-page">
+    <Navbar />
+
+    <main class="detail-content">
+      {
+        movie ? (
+          <>
+            <button
+              id="back-button"
+              class="back-button"
+              type="button"
+            >
+              ← Volver a películas
+            </button>
+
+            <section class="movie-detail">
+              <div class="poster-container">
+                <img
+                  src={movie.poster_url}
+                  alt={`Poster de ${movie.titulo}`}
+                />
+              </div>
+
+              <div class="movie-info">
+                <h1>{movie.titulo}</h1>
+
+                <div class={`recommendation ${recommendation?.class}`}>
+                  {recommendation?.text}
+                </div>
+
+                <div class="rating">
+                  <span class="star">★</span>
+                  <strong>{movie.calificacion}</strong>
+                  <span>/ 10</span>
+                </div>
+
+                <p class="synopsis">{movie.sinopsis}</p>
+
+                <div class="details">
+                  <div class="detail-item">
+                    <span>Director</span>
+                    <strong>{movie.director}</strong>
+                  </div>
+
+                  <div class="detail-item">
+                    <span>Reparto</span>
+                    <strong>{movie.reparto}</strong>
+                  </div>
+
+                  <div class="detail-item">
+                    <span>Género</span>
+                    <strong>{movie.genero}</strong>
+                  </div>
+
+                  <div class="detail-item">
+                    <span>Clasificación</span>
+                    <strong>{movie.clasificacion_edad}</strong>
+                  </div>
+
+                  <div class="detail-item">
+                    <span>Fecha de estreno</span>
+                    <strong>{movie.fecha_estreno}</strong>
+                  </div>
+
+                  <div class="detail-item">
+                    <span>Duración</span>
+                    <strong>{movie.duracion} minutos</strong>
+                  </div>
+
+                  <div class="detail-item">
+                    <span>Idioma</span>
+                    <strong>{movie.idioma}</strong>
+                  </div>
+
+                  <div class="detail-item">
+                    <span>País</span>
+                    <strong>{movie.pais}</strong>
+                  </div>
+                </div>
+
+                <div class="actions">
+                  <a
+                    class="edit-button"
+                    href={`/movies/${movie.id}/edit`}
+                  >
+                    Editar película
+                  </a>
+
+                  <button
+                    id="delete-button"
+                    class="delete-button"
+                    type="button"
+                  >
+                    Eliminar película
+                  </button>
+                </div>
+              </div>
+            </section>
+          </>
+        ) : (
+          <section class="not-found">
+            <h1>Película no encontrada</h1>
+
+            <p>
+              No encontramos una película con ese identificador.
+            </p>
+
+            <a href="/movies">Volver a películas</a>
+          </section>
+        )
+      }
+    </main>
+  </div>
+
+  <div id="delete-modal" class="modal-overlay" hidden>
+    <div class="modal">
+      <h2>¿Eliminar película?</h2>
+
+      <p>
+        ¿Está seguro de que desea eliminar esta película? Esta acción no se
+        puede deshacer.
+      </p>
+
+      <div class="modal-actions">
+        <button
+          id="cancel-delete"
+          class="cancel-button"
+          type="button"
+        >
+          Cancelar
+        </button>
+
+        <button
+          id="confirm-delete"
+          class="confirm-delete"
+          type="button"
+        >
+          Sí, eliminar
+        </button>
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<script>
+  const backButton =
+    document.querySelector<HTMLButtonElement>("#back-button");
+
+  const deleteButton =
+    document.querySelector<HTMLButtonElement>("#delete-button");
+
+  const deleteModal =
+    document.querySelector<HTMLDivElement>("#delete-modal");
+
+  const cancelDelete =
+    document.querySelector<HTMLButtonElement>("#cancel-delete");
+
+  const confirmDelete =
+    document.querySelector<HTMLButtonElement>("#confirm-delete");
+
+  backButton?.addEventListener("click", () => {
+    window.location.href = "/movies";
+  });
+
+  deleteButton?.addEventListener("click", () => {
+    if (deleteModal) {
+      deleteModal.hidden = false;
+    }
+  });
+
+  cancelDelete?.addEventListener("click", () => {
+    if (deleteModal) {
+      deleteModal.hidden = true;
+    }
+  });
+
+  deleteModal?.addEventListener("click", (event) => {
+    if (event.target === deleteModal) {
+      deleteModal.hidden = true;
+    }
+  });
+
+  confirmDelete?.addEventListener("click", () => {
+    // La eliminación se conectará con Supabase después.
+    window.location.href = "/movies";
+  });
+</script>
+
+<style>
+  .detail-page {
+    min-height: 100vh;
+    background: #f5f6f8;
+  }
+
+  .detail-content {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 40px 25px;
+  }
+
+  .back-button {
+    margin-bottom: 25px;
+    padding: 9px 14px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    background: #ffffff;
+    color: #374151;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  .back-button:hover {
+    background: #f3f4f6;
+  }
+
+  .movie-detail {
+    display: grid;
+    grid-template-columns: 320px 1fr;
+    gap: 40px;
+    padding: 30px;
+    border: 1px solid #e5e7eb;
+    border-radius: 14px;
+    background: #ffffff;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  }
+
+  .poster-container img {
+    width: 100%;
+    border-radius: 10px;
+    display: block;
+  }
+
+  .movie-info h1 {
+    margin: 0 0 12px;
+    color: #111827;
+    font-size: 34px;
+    font-weight: 800;
+  }
+
+  .recommendation {
+    display: inline-block;
+    margin-bottom: 15px;
+    font-weight: 700;
+  }
+
+  .recommendation-excellent {
+    color: #ea580c;
+  }
+
+  .recommendation-good {
+    color: #16a34a;
+  }
+
+  .recommendation-regular {
+    color: #ca8a04;
+  }
+
+  .recommendation-bad {
+    color: #dc2626;
+  }
+
+  .rating {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin-bottom: 25px;
+    color: #6b7280;
+    font-size: 18px;
+  }
+
+  .rating .star {
+    color: #ca8a04;
+    font-size: 24px;
+  }
+
+  .rating strong {
+    color: #111827;
+    font-size: 22px;
+  }
+
+  .synopsis {
+    margin-bottom: 30px;
+    color: #4b5563;
+    line-height: 1.7;
+  }
+
+  .details {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 18px;
+    margin-bottom: 30px;
+  }
+
+  .detail-item {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  .detail-item span {
+    color: #6b7280;
+    font-size: 13px;
+  }
+
+  .detail-item strong {
+    color: #111827;
+    font-size: 14px;
+  }
+
+  .actions {
+    display: flex;
+    gap: 10px;
+  }
+
+  .edit-button,
+  .delete-button {
+    padding: 11px 18px;
+    border-radius: 8px;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  .edit-button {
+    border: none;
+    background: #2563eb;
+    color: #ffffff;
+  }
+
+  .edit-button:hover {
+    background: #1d4ed8;
+  }
+
+  .delete-button {
+    border: 1px solid #fecaca;
+    background: #ffffff;
+    color: #dc2626;
+  }
+
+  .delete-button:hover {
+    background: #fef2f2;
+  }
+
+  .not-found {
+    padding: 60px 30px;
+    border: 1px solid #e5e7eb;
+    border-radius: 14px;
+    background: #ffffff;
+    text-align: center;
+  }
+
+  .not-found h1 {
+    margin: 0 0 10px;
+    color: #111827;
+  }
+
+  .not-found p {
+    margin-bottom: 25px;
+    color: #6b7280;
+  }
+
+  .not-found a {
+    display: inline-block;
+    padding: 10px 18px;
+    border-radius: 8px;
+    background: #2563eb;
+    color: #ffffff;
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.55);
+  }
+
+  .modal-overlay[hidden] {
+    display: none;
+  }
+
+  .modal {
+    width: 100%;
+    max-width: 430px;
+    padding: 28px;
+    border-radius: 14px;
+    background: #ffffff;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25);
+  }
+
+  .modal h2 {
+    margin: 0 0 10px;
+    color: #111827;
+  }
+
+  .modal p {
+    margin: 0 0 25px;
+    color: #6b7280;
+    line-height: 1.5;
+  }
+
+  .modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+  }
+
+  .cancel-button,
+  .confirm-delete {
+    padding: 10px 18px;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  .cancel-button {
+    background: #e5e7eb;
+    color: #374151;
+  }
+
+  .confirm-delete {
+    background: #dc2626;
+    color: #ffffff;
+  }
+
+  .confirm-delete:hover {
+    background: #b91c1c;
+  }
+
+  @media (max-width: 700px) {
+    .movie-detail {
+      grid-template-columns: 1fr;
+      gap: 25px;
+      padding: 20px;
+    }
+
+    .poster-container {
+      max-width: 320px;
+      margin: 0 auto;
+    }
+
+    .movie-info h1 {
+      font-size: 28px;
+    }
+
+    .details {
+      grid-template-columns: 1fr;
+    }
+
+    .actions {
+      flex-direction: column;
+    }
+
+    .edit-button,
+    .delete-button {
+      width: 100%;
+      box-sizing: border-box;
+      text-align: center;
+    }
+  }
+</style>

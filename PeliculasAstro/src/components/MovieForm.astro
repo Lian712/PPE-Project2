@@ -1,0 +1,458 @@
+---
+import {
+  Film,
+  User,
+  Users,
+  Tag,
+  Calendar,
+  Clock,
+  Star,
+  Languages,
+  Globe,
+  Image,
+  FileText,
+} from 'lucide-astro'
+
+import type { Movie } from '../types/movie'
+
+interface Props {
+  initialMovie?: Movie
+  editing?: boolean
+}
+
+const {
+  initialMovie,
+  editing = false,
+} = Astro.props
+
+const movie = initialMovie
+---
+
+<form id="movie-form" class="movie-form">
+  <div class="form-grid">
+
+    <div class="form-group">
+      <label for="titulo">
+        <Film size={17} />
+        Título
+      </label>
+
+      <input
+        id="titulo"
+        name="titulo"
+        type="text"
+        value={movie?.titulo ?? ''}
+        placeholder="Ej: Interstellar"
+        required
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="director">
+        <User size={17} />
+        Director
+      </label>
+
+      <input
+        id="director"
+        name="director"
+        type="text"
+        value={movie?.director ?? ''}
+        placeholder="Ej: Christopher Nolan"
+        required
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="reparto">
+        <Users size={17} />
+        Reparto
+      </label>
+
+      <input
+        id="reparto"
+        name="reparto"
+        type="text"
+        value={movie?.reparto ?? ''}
+        placeholder="Ej: Tom Hanks, Robin Wright"
+        required
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="genero">
+        <Tag size={17} />
+        Género
+      </label>
+
+      <input
+        id="genero"
+        name="genero"
+        type="text"
+        value={movie?.genero ?? ''}
+        placeholder="Ej: Ciencia ficción"
+        required
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="clasificacion_edad">
+        <Tag size={17} />
+        Clasificación por edad
+      </label>
+
+      <select
+        id="clasificacion_edad"
+        name="clasificacion_edad"
+        required
+      >
+        <option value="">Selecciona una clasificación</option>
+        <option value="ATP" selected={movie?.clasificacion_edad === 'ATP'}>
+          ATP
+        </option>
+        <option value="7+" selected={movie?.clasificacion_edad === '7+'}>
+          7+
+        </option>
+        <option value="13+" selected={movie?.clasificacion_edad === '13+'}>
+          13+
+        </option>
+        <option value="16+" selected={movie?.clasificacion_edad === '16+'}>
+          16+
+        </option>
+        <option value="18+" selected={movie?.clasificacion_edad === '18+'}>
+          18+
+        </option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="fecha_estreno">
+        <Calendar size={17} />
+        Fecha de estreno
+      </label>
+
+      <input
+        id="fecha_estreno"
+        name="fecha_estreno"
+        type="date"
+        value={movie?.fecha_estreno ?? ''}
+        required
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="duracion">
+        <Clock size={17} />
+        Duración (minutos)
+      </label>
+
+      <input
+        id="duracion"
+        name="duracion"
+        type="number"
+        min="1"
+        value={movie?.duracion ?? ''}
+        placeholder="Ej: 120"
+        required
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="calificacion">
+        <Star size={17} />
+        Calificación
+      </label>
+
+      <input
+        id="calificacion"
+        name="calificacion"
+        type="number"
+        min="0"
+        max="10"
+        step="0.1"
+        value={movie?.calificacion ?? ''}
+        placeholder="0 - 10"
+        required
+      />
+
+      <small>La calificación debe estar entre 0 y 10.</small>
+    </div>
+
+    <div class="form-group">
+      <label for="idioma">
+        <Languages size={17} />
+        Idioma
+      </label>
+
+      <input
+        id="idioma"
+        name="idioma"
+        type="text"
+        value={movie?.idioma ?? ''}
+        placeholder="Ej: Inglés"
+        required
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="pais">
+        <Globe size={17} />
+        País
+      </label>
+
+      <input
+        id="pais"
+        name="pais"
+        type="text"
+        value={movie?.pais ?? ''}
+        placeholder="Ej: Estados Unidos"
+        required
+      />
+    </div>
+
+    <div class="form-group full-width">
+      <label for="poster_url">
+        <Image size={17} />
+        URL del poster
+      </label>
+
+      <input
+        id="poster_url"
+        name="poster_url"
+        type="url"
+        value={movie?.poster_url ?? ''}
+        placeholder="https://..."
+        required
+      />
+    </div>
+
+    <div class="form-group full-width">
+      <label for="sinopsis">
+        <FileText size={17} />
+        Sinopsis
+      </label>
+
+      <textarea
+        id="sinopsis"
+        name="sinopsis"
+        rows="5"
+        placeholder="Escribe una breve sinopsis..."
+        required
+      >{movie?.sinopsis ?? ''}</textarea>
+    </div>
+
+  </div>
+
+  <div id="form-error" class="form-error" hidden></div>
+
+  <div class="form-actions">
+    <button
+      id="cancel-button"
+      class="cancel-button"
+      type="button"
+    >
+      Cancelar
+    </button>
+
+    <button
+      class="submit-button"
+      type="submit"
+    >
+      {editing ? 'Guardar cambios' : 'Agregar película'}
+    </button>
+  </div>
+</form>
+
+<script>
+  const form =
+    document.querySelector<HTMLFormElement>('#movie-form')
+
+  const errorMessage =
+    document.querySelector<HTMLDivElement>('#form-error')
+
+  const cancelButton =
+    document.querySelector<HTMLButtonElement>('#cancel-button')
+
+  form?.addEventListener('submit', (event) => {
+    event.preventDefault()
+
+    const ratingInput =
+      document.querySelector<HTMLInputElement>('#calificacion')
+
+    const rating = Number(ratingInput?.value)
+
+    if (rating < 0 || rating > 10) {
+      if (errorMessage) {
+        errorMessage.textContent =
+          'La calificación debe estar entre 0 y 10.'
+
+        errorMessage.hidden = false
+      }
+
+      return
+    }
+
+    if (errorMessage) {
+      errorMessage.hidden = true
+    }
+
+    const formData = new FormData(form)
+
+    const movieData = Object.fromEntries(formData.entries())
+
+    console.log('Película:', movieData)
+
+    window.dispatchEvent(
+      new CustomEvent('movie-form-submit', {
+        detail: movieData,
+      })
+    )
+  })
+
+  cancelButton?.addEventListener('click', () => {
+    window.dispatchEvent(
+      new CustomEvent('movie-form-cancel')
+    )
+  })
+</script>
+
+<style>
+.movie-form {
+  padding: 28px;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  background: #ffffff;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.form-group.full-width {
+  grid-column: 1 / -1;
+}
+
+.form-group label {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  color: #374151;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.form-group label svg {
+  color: #2563eb;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 11px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #111827;
+  font-family: inherit;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.form-group textarea {
+  resize: vertical;
+  min-height: 120px;
+}
+
+.form-group small {
+  color: #6b7280;
+  font-size: 12px;
+}
+
+.form-error {
+  margin-top: 20px;
+  padding: 12px 14px;
+  border-radius: 8px;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #dc2626;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 28px;
+}
+
+.cancel-button,
+.submit-button {
+  padding: 11px 20px;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.cancel-button {
+  background: #e5e7eb;
+  color: #374151;
+}
+
+.cancel-button:hover {
+  background: #d1d5db;
+}
+
+.submit-button {
+  background: #2563eb;
+  color: #ffffff;
+}
+
+.submit-button:hover {
+  background: #1d4ed8;
+}
+
+@media (max-width: 700px) {
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .form-group.full-width {
+    grid-column: auto;
+  }
+
+  .movie-form {
+    padding: 20px;
+  }
+
+  .form-actions {
+    flex-direction: column-reverse;
+  }
+
+  .cancel-button,
+  .submit-button {
+    width: 100%;
+  }
+}
+</style>
